@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
-import handler from '../api/enquiries.js';
+import { createHandler } from '../api/enquiries.js';
 
 test('Vercel publishes static browser assets and excludes private/server files', async () => {
-  execFileSync(process.execPath, ['scripts/build.mjs']);
+  execFileSync(process.execPath, ['scripts/build.mjs'], { env: { ...process.env, VERCEL_ENV: 'preview' } });
   const config = JSON.parse(await readFile('vercel.json', 'utf8'));
   assert.equal(config.framework, null);
   assert.equal(config.outputDirectory, 'dist');
@@ -18,15 +18,23 @@ test('Vercel publishes static browser assets and excludes private/server files',
   assert.match(await readFile('server.mjs', 'utf8'), /'\/assets\/site.js':'assets\/site.js'/);
 });
 
-function response() {
+export function response() {
   return { headers: {}, setHeader(key, value) { this.headers[key] = value; }, status(code) { this.code = code; return this; }, json(body) { this.body = body; return this; } };
 }
-test('hosted form does not claim to save an enquiry before integration exists', () => {
-  const res = response(); handler({ method: 'POST' }, res);
-  assert.equal(res.code, 503); assert.ok(res.body.error); assert.equal(res.body.ok, undefined);
+const quiet = { error() {} };
+test('missing database settings never acknowledge receipt', async () => {
+  const handler = createHandler({ env: {}, logger: quiet, getServices: () => { throw new Error('Missing database'); } });
+  const res = response(); await handler({ method: 'POST', headers: { 'content-type': 'application/json', host: 'localhost' }, body: {} }, res);
+  assert.equal(res.code, 503); assert.equal(res.body.ok, undefined);
   assert.equal(res.headers['Cache-Control'], 'no-store');
 });
-test('hosted endpoint rejects unsupported methods', () => {
-  const res = response(); handler({ method: 'GET' }, res);
+test('hosted endpoint rejects unsupported methods', async () => {
+  const handler = createHandler({ getServices: () => { throw new Error('Not called'); } });
+  const res = response(); await handler({ method: 'GET' }, res);
   assert.equal(res.code, 405); assert.equal(res.headers.Allow, 'POST');
+});
+test('hosted endpoint rejects untrusted origins and oversized payloads before accessing credentials', async () => {
+  const handler = createHandler({ env: { VERCEL: '1', SITE_URL: 'https://example.com' }, getServices: () => { throw new Error('Not called'); } });
+  const first = response(); await handler({ method: 'POST', headers: { origin: 'https://evil.test' } }, first);assert.equal(first.code,403);
+  const second = response(); await handler({ method: 'POST', headers: { origin: 'https://example.com', 'content-type': 'application/json' }, body: 'x'.repeat(16001) }, second);assert.equal(second.code,413);
 });

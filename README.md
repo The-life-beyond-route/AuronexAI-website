@@ -1,74 +1,79 @@
 # AuronexAI website
 
-A complete, responsive marketing website with a local enquiry backend. All source and assets are in this folder. The current website runs directly with Node.js. Dependencies for a future Prisma/Resend integration have been added; that integration is not active yet.
+Responsive marketing website with a Vercel enquiry API, PostgreSQL persistence via Prisma, and Resend email notifications. All source code is in this folder.
 
-## Run the website
+## Run locally
 
-Install Node.js 24 or newer, then open a terminal in this folder:
-
-```powershell
-node server.mjs
-```
-
-You can also double-click start.cmd on Windows. Open http://localhost:3000 in your browser. Keep the terminal running while using the website. Stop with Ctrl+C. Use `$env:PORT=3001` before starting to choose another port.
-
-Opening index.html directly previews the design, tabs, calculator, and mobile menu. Form submission needs the included Node server.
-
-## Files
-
-- index.html — complete website content and semantic markup
-- styles.css — responsive design, keyboard focus, reduced motion
-- assets/site.js — mobile menu, accessible tabs, estimator, and form
-- logo.svg — transparent blue/purple vector A-and-arc mark recreated from your supplied brand reference
-- privacy.html — privacy notice reflecting the local implementation
-- server.mjs — static routes and validated enquiry endpoint
-- package.json — start and syntax check commands
-- index.original.html — preserved original website
-- data/enquiries.jsonl — created automatically when the first enquiry is submitted
-
-## Enquiries
-
-Successful submissions are stored in `data/enquiries.jsonl`, one JSON record per line. This is a local inbox, not email delivery. Read it with:
+Use Node.js 24 LTS, then:
 
 ```powershell
-Get-Content .\data\enquiries.jsonl
+npm install
+npm start
 ```
 
-The data directory is never served over HTTP and is excluded from Git. No public inbox or admin endpoint is exposed. Do not commit, publish, or share enquiry records. Back up and remove records according to your business retention policy. The server validates fields and consent, enforces a request size limit, uses a honeypot, checks browser origins, and limits repeated requests. Rate limits are in memory and reset on restart.
+Open http://localhost:3000. Without database settings, the local server saves enquiries in `data/enquiries.jsonl` and sends no email. With PostgreSQL settings in `.env`, it uses the hosted-style Prisma/Resend handler instead. Copy `.env.example` to `.env` and use development credentials for integration testing. The Windows launcher is `start.cmd`.
 
-## Editing
+## How enquiries work
 
-Edit index.html for content, styles.css for colors and layout, and the examples object in assets/site.js for industry workflows. Replace logo.svg with your approved brand mark. There are no invented testimonials, client logos, prices, or outcome claims. Platform names are illustrative integration options, not partnerships. The time estimator uses hours per week × chosen share × 4; it is not a promised result.
+1. The browser sends a validated enquiry with a stable request ID to `/api/enquiries`.
+2. The API checks the request origin, field sizes, consent, and a database-backed rate limit.
+3. Prisma saves the enquiry in PostgreSQL before any notification is sent.
+4. Resend sends the details to `ENQUIRY_TO`, with the customer's email as Reply-To.
+5. Notification failures leave the enquiry saved. The daily authenticated retry job processes pending notifications, up to five attempts per enquiry. Visitors receive success once their enquiry is safely stored.
 
-## Checks
+Resend acceptance is recorded as SENT; it does not prove inbox delivery. Delivery, bounce, or spam status should be checked in the Resend dashboard. Request IDs prevent duplicate lead records. A database lease and Resend idempotency key limit duplicate notifications. Resend keys expire after 24 hours; in the rare case where an email was accepted but its database status was not saved, a later retry may produce a duplicate email. The lead remains safe in the database.
+
+## Vercel environment variables
+
+The existing Marketplace integrations supply `RESEND_API_KEY`, `RESEND_EMAIL_DOMAIN`, `DATABASE_URL`, and `DATABASE_URL_POOLED`. Do not replace them with placeholders.
+
+Add these server-only settings:
+
+- `ENQUIRY_TO`: your notification inbox, one email address.
+- `SITE_URL`: your canonical website origin, e.g. `https://auronex-ai-website.vercel.app`, without a trailing slash.
+- `CRON_SECRET`: a random secret of at least 32 characters, used by Vercel to authenticate the daily retry job.
+- `RATE_LIMIT_SECRET`: a separate random secret for hashing request IP addresses.
+- Optional `RESEND_FROM`: `AuronexAI <enquiries@your-verified-domain.com>`. If omitted, the app uses `enquiries@RESEND_EMAIL_DOMAIN`.
+- Optional `DIRECT_URL`: direct PostgreSQL connection for migrations. Otherwise the integration's direct `DATABASE_URL` is used. Runtime prefers `DATABASE_URL_POOLED`.
+
+The sender domain must be verified in Resend. Do not use the customer's address as the sender; Reply-To is used instead. Set variables for Production and use separate development/preview resources when appropriate. No keys are exposed to the browser or committed to Git.
+
+Generate a secret locally with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` and enter it directly in Vercel. Do not paste secrets into chat.
+
+## Deployment
+
+Import the repository into Vercel. Framework: **Other**. Build Command: `npm run build`. Output Directory: `dist`. Node.js: **24.x**. Root Directory: repository root. `vercel.json` contains the configuration.
+
+The install/build generates Prisma Client. Production builds run `prisma migrate deploy` to apply the committed additive migration before publishing static assets. Preview/local builds do not modify a database automatically. To initialize a separate development/preview database with its environment configured, run `npm run db:migrate`. No reset or destructive schema push is used. Existing databases that already have these tables need migration baselining rather than a reset.
+
+The retry endpoint runs daily at 04:00 UTC. It requires the Authorization bearer value matching `CRON_SECRET`; it is not a public admin endpoint. A manual retry against a locally configured environment is available with `npm run notifications:retry`.
+
+## View enquiries
+
+Use the Prisma database dashboard or `npm run db:studio` with the intended database environment loaded. The Enquiry table includes notification status, attempt count, and provider email ID. Do not publish Prisma Studio or database credentials. Remove records according to your business retention policy; finalize the privacy contact and retention period before launch.
+
+## Verification
 
 ```powershell
-node --check assets/site.js
-node --check server.mjs
+npm run check
+npm test
+npm run build
 ```
 
-## Public launch
+Tests cover static asset isolation, validation, origin restrictions, database failure, duplicate and parallel submissions, rate limiting, notification failure, and retry behavior using mock services. Real database/email verification requires a configured deployment. `node verify.mjs` remains a local-file-mode smoke test; do not run it against the configured production API.
 
-This delivery is local and has not been publicly deployed. The server binds to loopback by default. For deployment, use a Node-capable host with HTTPS, persistent protected storage, and a reverse proxy. Adapt the listen host intentionally for that environment. This filesystem backend requires a persistent disk; ephemeral/serverless deployments need a database or external form service instead.
+## Source map
 
-Before launch: add verified business details and a direct contact, review the recreated logo against your original master artwork, finalize the privacy notice and retention period, configure your domain/social image, and connect email or CRM notifications if desired. Static hosting alone will display the site but will not run `/api/enquiries`. Never put webhook secrets in client-side JavaScript. No paid service or external account has been configured.
+- `index.html`, `styles.css`, `assets/site.js`: website and browser interactions.
+- `logo.svg`: vector recreation of the supplied logo reference.
+- `api/enquiries.js`: Vercel enquiry endpoint.
+- `api/notifications-retry.js`: authenticated daily notification retry endpoint.
+- `lib/enquiries.mjs`: validation, persistence flow, notification logic.
+- `lib/services.mjs`: Prisma PostgreSQL adapter and Resend SDK clients.
+- `prisma/`: schema and committed migrations.
+- `scripts/`: static build, migration, and manual retry commands.
+- `server.mjs`: local server, with a file-based fallback when database settings are absent.
+- `privacy.html`: privacy notice.
+- `index.original.html`: preserved original website.
 
-## Local integration verification
-
-With the server running, run `node verify.mjs`. It tests routes, file protection, input validation, origin checks, and persistence, then removes its own temporary QA record. Run only in a local development environment.
-
-Browser visual verification was unavailable in this session. Check desktop and mobile layouts before public launch.
-
-
-
-## Integration status
-
-Prisma schema/configuration, an environment-variable example, and Prisma/Resend dependencies are included as an unfinished scaffold. The active form still saves enquiries locally and does not send email. Vercel now has an explicit static build configuration. The hosted enquiry endpoint returns an unavailable response until the integration is completed. Finish and test the integration before deploying.
-
-Use `npm install` to install the scaffold dependencies and generate Prisma Client. Only commit `.env.example`, never `.env` or real credentials.
-
-## Deploy the website to Vercel
-
-Import this GitHub repository. Use repository root as Root Directory, Framework Preset **Other**, Build Command `npm run build`, Output Directory `dist`, and Node.js **24.x**. The committed `vercel.json` declares these build settings. Remove any previous Express/Node framework override and any custom entrypoint pointing at the browser script, then redeploy the latest commit. No environment variables are required to display the website.
-
-The browser script is `assets/site.js` and is delivered as a static file, never executed as the server entrypoint. Only allowlisted website assets are copied into `dist`. The existing local Node server continues to save local enquiries. The Vercel endpoint deliberately returns HTTP 503 until Resend/Prisma are connected; no hosted enquiry is saved or emailed yet.
+Generated output, local enquiries, environment files, dependencies, and ZIP packages are excluded from Git. Only allowlisted public assets are copied to `dist`.

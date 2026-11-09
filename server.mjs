@@ -15,6 +15,11 @@ const server = http.createServer(async (req,res)=>{
   try {
     const url = new URL(req.url,'http://localhost');
     if(url.pathname==='/api/enquiries' && req.method==='POST'){
+      if(process.env.DATABASE_URL || process.env.DATABASE_URL_POOLED){
+        let raw='';for await(const chunk of req){raw+=chunk;if(Buffer.byteLength(raw)>16000)return reply(413,{error:'Your message is too long.'});}
+        req.body=raw;res.status=(status)=>{res.statusCode=status;return res;};res.json=(body)=>{res.setHeader('Content-Type','application/json');res.end(JSON.stringify(body));};
+        const {default:handler}=await import('./api/enquiries.js');return handler(req,res);
+      }
       if(req.headers.origin && req.headers.origin!==`http://${req.headers.host}` && req.headers.origin!==`https://${req.headers.host}`) return reply(403,{error:'Request origin not allowed.'});
       if(!req.headers['content-type']?.startsWith('application/json'))return reply(415,{error:'JSON required.'});
       const ip=req.socket.remoteAddress; const now=Date.now();

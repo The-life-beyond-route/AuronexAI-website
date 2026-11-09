@@ -3,13 +3,43 @@
   "framework": null,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "rewrites": [{ "source": "/privacy", "destination": "/privacy.html" }],
-  "headers": [{
-    "source": "/(.*)",
-    "headers": [
-      { "key": "X-Content-Type-Options", "value": "nosniff" },
-      { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-      { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'" }
-    ]
-  }]
+  "rewrites": [
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+        }
+      ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/notifications-retry",
+      "schedule": "0 4 * * *"
+    }
+  ],
+  "functions": {
+    "api/enquiries.js": {
+      "maxDuration": 60
+    },
+    "api/notifications-retry.js": {
+      "maxDuration": 300
+    }
+  }
 }

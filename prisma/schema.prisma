@@ -21,6 +21,7 @@ model Enquiry {
   notificationStatus String   @default("PENDING")
   notificationId     String?
   notificationSentAt DateTime?
+  notificationLeaseUntil DateTime?
   notificationAttempts Int    @default(0)
 
   @@index([notificationStatus, createdAt])
@@ -33,3 +34,4 @@ model RateLimit {
 
   @@index([expiresAt])
 }
+

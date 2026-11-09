@@ -1,8 +1,12 @@
+import { execFileSync } from 'node:child_process';
 import { mkdir, copyFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
+if (process.env.VERCEL_ENV === 'production') {
+  execFileSync(process.execPath, [path.join(root, 'scripts/migrate.mjs')], { stdio: 'inherit' });
+}
 const output = path.join(root, 'dist');
 // Explicit allowlist: no credentials, enquiry records, or server source are published.
 const files = ['index.html', 'styles.css', 'assets/site.js', 'logo.svg', 'privacy.html'];
