@@ -18,7 +18,7 @@ Opening index.html directly previews the design, tabs, calculator, and mobile me
 
 - index.html — complete website content and semantic markup
 - styles.css — responsive design, keyboard focus, reduced motion
-- app.js — mobile menu, accessible tabs, estimator, and form
+- assets/site.js — mobile menu, accessible tabs, estimator, and form
 - logo.svg — transparent blue/purple vector A-and-arc mark recreated from your supplied brand reference
 - privacy.html — privacy notice reflecting the local implementation
 - server.mjs — static routes and validated enquiry endpoint
@@ -38,12 +38,12 @@ The data directory is never served over HTTP and is excluded from Git. No public
 
 ## Editing
 
-Edit index.html for content, styles.css for colors and layout, and the examples object in app.js for industry workflows. Replace logo.svg with your approved brand mark. There are no invented testimonials, client logos, prices, or outcome claims. Platform names are illustrative integration options, not partnerships. The time estimator uses hours per week × chosen share × 4; it is not a promised result.
+Edit index.html for content, styles.css for colors and layout, and the examples object in assets/site.js for industry workflows. Replace logo.svg with your approved brand mark. There are no invented testimonials, client logos, prices, or outcome claims. Platform names are illustrative integration options, not partnerships. The time estimator uses hours per week × chosen share × 4; it is not a promised result.
 
 ## Checks
 
 ```powershell
-node --check app.js
+node --check assets/site.js
 node --check server.mjs
 ```
 
@@ -63,6 +63,12 @@ Browser visual verification was unavailable in this session. Check desktop and m
 
 ## Integration status
 
-Prisma schema/configuration, an environment-variable example, and Prisma/Resend dependencies are included as an unfinished scaffold. The active form still saves enquiries locally and does not send email. No Vercel deployment configuration is included yet. Finish and test the integration before deploying.
+Prisma schema/configuration, an environment-variable example, and Prisma/Resend dependencies are included as an unfinished scaffold. The active form still saves enquiries locally and does not send email. Vercel now has an explicit static build configuration. The hosted enquiry endpoint returns an unavailable response until the integration is completed. Finish and test the integration before deploying.
 
 Use `npm install` to install the scaffold dependencies and generate Prisma Client. Only commit `.env.example`, never `.env` or real credentials.
+
+## Deploy the website to Vercel
+
+Import this GitHub repository. Use repository root as Root Directory, Framework Preset **Other**, Build Command `npm run build`, Output Directory `dist`, and Node.js **24.x**. The committed `vercel.json` declares these build settings. Remove any previous Express/Node framework override and any custom entrypoint pointing at the browser script, then redeploy the latest commit. No environment variables are required to display the website.
+
+The browser script is `assets/site.js` and is delivered as a static file, never executed as the server entrypoint. Only allowlisted website assets are copied into `dist`. The existing local Node server continues to save local enquiries. The Vercel endpoint deliberately returns HTTP 503 until Resend/Prisma are connected; no hosted enquiry is saved or emailed yet.

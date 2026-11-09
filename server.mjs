@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 const root = fileURLToPath(new URL('.', import.meta.url));
-const routes = {'/':'index.html','/index.html':'index.html','/styles.css':'styles.css','/app.js':'app.js','/logo.svg':'logo.svg','/privacy':'privacy.html','/privacy.html':'privacy.html'};
+const routes = {'/':'index.html','/index.html':'index.html','/styles.css':'styles.css','/assets/site.js':'assets/site.js','/logo.svg':'logo.svg','/privacy':'privacy.html','/privacy.html':'privacy.html'};
 const mime = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml'};
 const attempts = new Map();
 const server = http.createServer(async (req,res)=>{

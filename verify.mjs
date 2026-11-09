@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFile,rm} from 'node:fs/promises';
 const base='http://localhost:3000';
-for(const route of ['/','/styles.css','/app.js','/logo.svg','/privacy']){const result=await fetch(base+route);assert.equal(result.status,200,route);assert.ok((await result.text()).length>50);}
+for(const route of ['/','/styles.css','/assets/site.js','/logo.svg','/privacy']){const result=await fetch(base+route);assert.equal(result.status,200,route);assert.ok((await result.text()).length>50);}
 for(const route of ['/data/enquiries.jsonl','/server.mjs','/README.md','/missing'])assert.equal((await fetch(base+route)).status,404,route);
 const post=(data,origin)=>fetch(base+'/api/enquiries',{method:'POST',headers:{'Content-Type':'application/json',...(origin?{Origin:origin}:{})},body:JSON.stringify(data)});
 assert.equal((await post({})).status,400);
