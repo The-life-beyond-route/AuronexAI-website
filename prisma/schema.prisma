@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Enquiry {
+  id                 String   @id @default(uuid())
+  requestId          String   @unique
+  payloadHash        String
+  createdAt          DateTime @default(now())
+  name               String
+  business           String
+  email              String
+  service            String
+  message            String
+  consentAt          DateTime
+  notificationStatus String   @default("PENDING")
+  notificationId     String?
+  notificationSentAt DateTime?
+  notificationAttempts Int    @default(0)
+
+  @@index([notificationStatus, createdAt])
+}
+
+model RateLimit {
+  id        String   @id
+  count     Int      @default(1)
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}

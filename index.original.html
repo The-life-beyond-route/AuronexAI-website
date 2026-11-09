@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AuronexAI helps local small businesses automate repetitive work, capture more leads, and grow with AI." />
+  <title>AuronexAI — AI Automation for Small Businesses</title>
+  <style>
+    :root{
+      --bg:#05070d; --bg2:#090d18; --card:rgba(16,22,38,.72);
+      --text:#f5f7ff; --muted:#9ba6bd; --line:rgba(255,255,255,.09);
+      --cyan:#55e6ff; --purple:#8b6cff; --green:#6fffb0;
+      --max:1160px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;background:
+      radial-gradient(circle at 75% 10%,rgba(85,230,255,.12),transparent 25%),
+      radial-gradient(circle at 15% 30%,rgba(139,108,255,.12),transparent 28%),var(--bg);
+      color:var(--text);line-height:1.6;overflow-x:hidden}
+    a{text-decoration:none;color:inherit}
+    .container{width:min(var(--max),calc(100% - 40px));margin:auto}
+    .nav{position:fixed;top:0;left:0;right:0;z-index:20;background:rgba(5,7,13,.72);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+    .nav-inner{height:76px;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-weight:900;letter-spacing:-.04em;font-size:23px}
+    .logo span{color:var(--cyan)}
+    .navlinks{display:flex;gap:28px;color:#c5cede;font-size:14px}
+    .navlinks a:hover{color:white}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 19px;border-radius:12px;font-weight:750;font-size:14px;transition:.2s;border:1px solid transparent}
+    .btn-primary{background:linear-gradient(135deg,var(--cyan),#7e9cff);color:#031018;box-shadow:0 0 35px rgba(85,230,255,.18)}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 45px rgba(85,230,255,.3)}
+    .btn-ghost{border-color:var(--line);background:rgba(255,255,255,.035);color:white}
+    .btn-ghost:hover{background:rgba(255,255,255,.07)}
+    .hero{min-height:100vh;padding:150px 0 90px;display:flex;align-items:center;position:relative}
+    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+    .eyebrow{display:inline-flex;gap:9px;align-items:center;border:1px solid rgba(85,230,255,.2);background:rgba(85,230,255,.06);color:var(--cyan);padding:7px 11px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+    h1{font-size:clamp(48px,6.2vw,82px);line-height:.98;letter-spacing:-.065em;margin:22px 0}
+    .gradient{background:linear-gradient(90deg,#fff 10%,var(--cyan) 55%,#a98cff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero p{font-size:18px;color:var(--muted);max-width:620px}
+    .actions{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
+    .visual{position:relative;min-height:450px}
+    .orb{position:absolute;width:330px;height:330px;right:8%;top:45px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#bdf7ff,rgba(85,230,255,.28) 22%,rgba(139,108,255,.22) 52%,transparent 70%);filter:blur(1px);box-shadow:0 0 100px rgba(85,230,255,.12)}
+    .dashboard{position:absolute;inset:85px 0 30px 45px;border:1px solid var(--line);background:rgba(10,15,27,.72);backdrop-filter:blur(16px);border-radius:22px;padding:22px;box-shadow:0 30px 90px rgba(0,0,0,.45);transform:perspective(900px) rotateY(-8deg) rotateX(3deg)}
+    .dash-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+    .dash-title{font-size:13px;color:#b9c3d6}.live{font-size:11px;color:var(--green);border:1px solid rgba(111,255,176,.25);padding:4px 8px;border-radius:999px}
+    .metric{padding:16px;border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:14px;margin-bottom:12px}
+    .metric small{color:var(--muted);font-size:11px}.metric strong{display:block;font-size:26px;margin-top:3px}
+    .bar{height:6px;background:#1a2234;border-radius:10px;overflow:hidden;margin-top:10px}.bar i{display:block;height:100%;width:76%;background:linear-gradient(90deg,var(--cyan),var(--purple));border-radius:10px}
+    section{padding:100px 0}
+    .section-head{max-width:700px;margin-bottom:45px}.section-head .eyebrow{margin-bottom:15px}
+    h2{font-size:clamp(34px,4vw,54px);line-height:1.05;letter-spacing:-.045em}
+    .section-head p{color:var(--muted);margin-top:15px;font-size:17px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{border:1px solid var(--line);background:linear-gradient(145deg,rgba(20,27,46,.72),rgba(10,14,25,.72));border-radius:18px;padding:27px;transition:.25s}
+    .card:hover{transform:translateY(-5px);border-color:rgba(85,230,255,.25);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+    .icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(85,230,255,.08);border:1px solid rgba(85,230,255,.14);font-size:20px;margin-bottom:22px}
+    .card h3{font-size:20px;margin-bottom:9px}.card p{color:var(--muted);font-size:14px}
+    .process{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;counter-reset:step}
+    .step{position:relative;padding:25px;border-top:1px solid var(--line)}.step:before{counter-increment:step;content:"0" counter(step);color:var(--cyan);font-size:12px;font-weight:900}.step h3{margin:15px 0 8px}.step p{color:var(--muted);font-size:14px}
+    .industries{display:flex;flex-wrap:wrap;gap:10px}.pill{padding:12px 15px;border:1px solid var(--line);border-radius:999px;color:#c8d0df;background:rgba(255,255,255,.025)}
+    .cta{padding:65px;border-radius:28px;border:1px solid rgba(85,230,255,.17);background:radial-gradient(circle at 85% 20%,rgba(139,108,255,.22),transparent 35%),linear-gradient(135deg,rgba(85,230,255,.08),rgba(255,255,255,.02));display:flex;justify-content:space-between;gap:30px;align-items:center}
+    .cta p{color:var(--muted);max-width:650px;margin-top:12px}
+    form{display:grid;gap:13px}
+    .contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:50px;align-items:start}
+    input,textarea,select{width:100%;background:#0b101c;border:1px solid var(--line);border-radius:12px;padding:14px 15px;color:white;outline:none;font:inherit}
+    input:focus,textarea:focus,select:focus{border-color:rgba(85,230,255,.45)}
+    textarea{min-height:140px;resize:vertical}
+    footer{border-top:1px solid var(--line);padding:30px 0;color:#778198;font-size:13px}
+    .footer-inner{display:flex;justify-content:space-between;gap:20px}
+    .mobile{display:none}
+    @media(max-width:850px){
+      .navlinks{display:none}.mobile{display:block}.hero-grid,.contact-grid{grid-template-columns:1fr}.visual{min-height:390px}.dashboard{inset:50px 0 20px 0}.grid-3{grid-template-columns:1fr}.process{grid-template-columns:1fr 1fr}.cta{flex-direction:column;align-items:flex-start;padding:40px}
+    }
+    @media(max-width:520px){.container{width:min(var(--max),calc(100% - 28px))}.hero{padding-top:125px}.hero p{font-size:16px}.orb{width:250px;height:250px;right:5%}.process{grid-template-columns:1fr}.footer-inner{flex-direction:column}}
+  </style>
+</head>
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="logo" href="#">Auronex<span>AI</span></a>
+    <nav class="navlinks">
+      <a href="#solutions">Solutions</a><a href="#how">How It Works</a><a href="#industries">Industries</a><a href="#contact">Contact</a>
+    </nav>
+    <a class="btn btn-primary mobile" href="#contact">Let's Talk</a>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> AI Automation for Local Business</div>
+      <h1>Make your business <span class="gradient">run smarter.</span></h1>
+      <p>AuronexAI builds practical AI automations for local small businesses — so you can capture more leads, respond faster, reduce repetitive work, and spend more time growing.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#contact">Book a Free Consultation →</a>
+        <a class="btn btn-ghost" href="#solutions">Explore Solutions</a>
+      </div>
+    </div>
+    <div class="visual" aria-hidden="true">
+      <div class="orb"></div>
+      <div class="dashboard">
+        <div class="dash-top"><span class="dash-title">AURONEXAI / AUTOMATION HUB</span><span class="live">● ACTIVE</span></div>
+        <div class="metric"><small>Leads captured automatically</small><strong>+38%</strong><div class="bar"><i></i></div></div>
+        <div class="metric"><small>Customer response time</small><strong>↓ 72%</strong><div class="bar"><i style="width:72%"></i></div></div>
+        <div class="metric"><small>Manual tasks automated</small><strong>24 / 7</strong><div class="bar"><i style="width:88%"></i></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="solutions">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">What we automate</div>
+      <h2>AI that works <span class="gradient">behind the scenes.</span></h2>
+      <p>We connect the tools you already use and build intelligent workflows around the tasks that slow your business down.</p>
+    </div>
+    <div class="grid-3">
+      <article class="card"><div class="icon">◎</div><h3>Lead Capture</h3><p>Capture enquiries from your website and social channels, qualify them, and route hot leads automatically.</p></article>
+      <article class="card"><div class="icon">✦</div><h3>AI Customer Support</h3><p>Give customers instant answers to common questions while keeping your team focused on high-value conversations.</p></article>
+      <article class="card"><div class="icon">↗</div><h3>Follow-Up Automation</h3><p>Automatically follow up with prospects and customers so opportunities don't disappear because someone forgot to reply.</p></article>
+      <article class="card"><div class="icon">★</div><h3>Review Automation</h3><p>Build simple customer-review workflows that make it easier to collect feedback and strengthen your online reputation.</p></article>
+      <article class="card"><div class="icon">◷</div><h3>Booking & Reminders</h3><p>Automate appointment requests, confirmations, reminders, and follow-ups for local service businesses.</p></article>
+      <article class="card"><div class="icon">⚡</div><h3>Custom Workflows</h3><p>Connect your forms, CRM, email, spreadsheets and other tools into one automated business workflow.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Simple process</div>
+      <h2>From repetitive work to <span class="gradient">automation.</span></h2>
+    </div>
+    <div class="process">
+      <div class="step"><h3>Discover</h3><p>We identify the repetitive tasks and missed opportunities inside your business.</p></div>
+      <div class="step"><h3>Design</h3><p>We map the workflow and choose the right AI and automation tools.</p></div>
+      <div class="step"><h3>Build</h3><p>We build, connect and test the automation around your existing process.</p></div>
+      <div class="step"><h3>Optimize</h3><p>We monitor the workflow and improve it as your business grows.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="industries">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Built for local businesses</div>
+      <h2>Your business. <span class="gradient">Automated.</span></h2>
+      <p>Start with one workflow and expand as you see results.</p>
+    </div>
+    <div class="industries">
+      <span class="pill">Restaurants</span><span class="pill">Salons & Beauty</span><span class="pill">Real Estate</span>
+      <span class="pill">Clinics</span><span class="pill">Gyms & Fitness</span><span class="pill">Home Services</span>
+      <span class="pill">Local Retail</span><span class="pill">Professional Services</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="cta">
+      <div><div class="eyebrow">Ready to automate?</div><h2>Let's find your first <span class="gradient">AI opportunity.</span></h2><p>Tell us what takes too much time in your business. We'll help you identify a practical automation to start with.</p></div>
+      <a class="btn btn-primary" href="#contact">Start a Conversation →</a>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container contact-grid">
+    <div>
+      <div class="eyebrow">Get in touch</div>
+      <h2 style="margin-top:16px">Let's build something <span class="gradient">useful.</span></h2>
+      <p style="color:var(--muted);margin-top:18px;max-width:500px">Have a repetitive process, too many enquiries, or a workflow that should be automated? Send us the details.</p>
+    </div>
+    <form onsubmit="sendForm(event)">
+      <input id="name" required placeholder="Your name" />
+      <input id="business" required placeholder="Business name" />
+      <input id="email" type="email" required placeholder="Email address" />
+      <select id="need" required><option value="">What would you like to automate?</option><option>Lead generation</option><option>Customer support</option><option>Follow-ups</option><option>Bookings & reminders</option><option>Reviews</option><option>Something else</option></select>
+      <textarea id="message" placeholder="Tell us briefly about your current process..."></textarea>
+      <button class="btn btn-primary" type="submit">Send Enquiry →</button>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer><div class="container footer-inner"><div>© 2026 AuronexAI. All rights reserved.</div><div>AI Automation for Local Small Businesses</div></div></footer>
+
+<script>
+function sendForm(e){
+  e.preventDefault();
+  const name=document.getElementById('name').value;
+  const business=document.getElementById('business').value;
+  const email=document.getElementById('email').value;
+  const need=document.getElementById('need').value;
+  const message=document.getElementById('message').value;
+  const subject=encodeURIComponent('New AuronexAI enquiry — '+business);
+  const body=encodeURIComponent(`Name: ${name}\nBusiness: ${business}\nEmail: ${email}\nAutomation needed: ${need}\n\nMessage:\n${message}`);
+  window.location.href=`mailto:Auronexai.com?subject=${subject}&body=${body}`;
+}
+</script>
+</body>
+</html>

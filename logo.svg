@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+ <title>AuronexAI — A and forward arc</title>
+ <defs>
+  <linearGradient id="left" x1="83" y1="28" x2="79" y2="224" gradientUnits="userSpaceOnUse"><stop stop-color="#54edff"/><stop offset=".35" stop-color="#00baff"/><stop offset=".73" stop-color="#004aff"/><stop offset="1" stop-color="#0719ae"/></linearGradient>
+  <linearGradient id="right" x1="112" y1="37" x2="212" y2="217" gradientUnits="userSpaceOnUse"><stop stop-color="#068aff"/><stop offset=".4" stop-color="#3015ed"/><stop offset=".78" stop-color="#7b2cff"/><stop offset="1" stop-color="#ed4aff"/></linearGradient>
+  <linearGradient id="arc" x1="62" y1="189" x2="233" y2="116" gradientUnits="userSpaceOnUse"><stop stop-color="#004cff"/><stop offset=".48" stop-color="#7729ff"/><stop offset="1" stop-color="#c644ff"/></linearGradient>
+  <linearGradient id="edge" x1="100" y1="30" x2="213" y2="224" gradientUnits="userSpaceOnUse"><stop stop-color="#c4ffff"/><stop offset=".45" stop-color="#6b65ff"/><stop offset="1" stop-color="#ffb0ff"/></linearGradient>
+ </defs>
+ <path d="M18 227 107 30h40l91 197h-47L126 81 65 227Z" fill="#090e38"/>
+ <path d="M108 26h39l89 197h-45L124 71Z" fill="url(#right)" stroke="url(#edge)" stroke-width="1.6"/>
+ <path d="M18 223 108 26l22 43-64 154Z" fill="url(#left)" stroke="#60dfff" stroke-width="1.6"/>
+ <path d="m108 26 22 43-6 13-17-42Z" fill="#7befff" fill-opacity=".3"/>
+ <path d="M63 205c51-53 113-100 184-97-73 12-133 55-181 115H18l14-9Z" fill="#090d43"/>
+ <path d="M65 201c52-52 112-95 182-93-69 8-132 51-181 112H21l11-9Z" fill="url(#arc)" stroke="#100b5e" stroke-width="2"/>
+ <path d="M65 201c56-52 113-94 182-93-63 6-124 44-174 94" stroke="#c58aff" stroke-width="1.5"/>
+ <path d="m191 223 45 0" stroke="#f3b8ff" stroke-width="2"/>
+</svg>
