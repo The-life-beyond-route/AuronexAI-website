@@ -30,7 +30,7 @@ function fixture() {
 }
 test('valid enquiry is stored before a notification and Reply-To points to the customer',async()=>{
   const f=fixture();const body=sample();const result=await f.submit(body);
-  assert.equal(result.ok,true);assert.equal(f.entries.size,1);const saved=f.entries.get(result.id);assert.equal(saved.notificationStatus,'SENT');assert.ok(saved.consentAt);
+  assert.equal(result.ok,true);assert.equal(result.notificationAccepted,true);assert.equal(f.entries.size,1);const saved=f.entries.get(result.id);assert.equal(saved.notificationStatus,'SENT');assert.ok(saved.consentAt);
   assert.equal(f.calls[0].payload.replyTo,body.email);assert.deepEqual(f.calls[0].payload.to,['owner@example.com']);assert.match(f.calls[0].payload.text,/Automate appointment reminders/);
   assert.equal(f.calls[0].options.idempotencyKey,`enquiry/${result.id}`);
 });
@@ -47,7 +47,7 @@ test('a reused request ID with different content is rejected',async()=>{
 });
 test('provider failure retains lead, returns success, and a retry sends it',async()=>{
   const f=fixture();const send=f.mailer.emails.send;f.mailer.emails.send=async()=>({error:{message:'Provider down'}});
-  const result=await f.submit(sample());assert.equal(result.ok,true);assert.equal(f.entries.get(result.id).notificationStatus,'PENDING');
+  const result=await f.submit(sample());assert.equal(result.ok,true);assert.equal(result.notificationAccepted,false);assert.equal(f.entries.get(result.id).notificationStatus,'PENDING');
   f.mailer.emails.send=send;const retry=await retryNotifications({...f,env,logger});assert.equal(retry.sent,1);assert.equal(f.entries.get(result.id).notificationStatus,'SENT');
 });
 test('a database failure never sends an email',async()=>{
